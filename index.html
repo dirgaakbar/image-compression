@@ -1,96 +1,84 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HD Compressor & AI Enhancer</title>
+    <title>Kompres Foto HD - Mudah & Cepat</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
+    <div class="wrapper">
         <header>
-            <h1>HD Image Compressor</h1>
-            <p>Kecilkan ukuran file, pertajam kualitas gambar</p>
+            <div class="logo">📸 HD-Compress</div>
+            <h1>Ubah Foto Jadi HD & Kecil</h1>
+            <p>Tanpa ribet, tanpa pecah. 100% Aman di perangkat Anda.</p>
         </header>
 
-        <div class="main-grid">
-            <section class="card glass">
-                <h2>🖼️ Kompres & Enhance</h2>
-                <div class="input-group">
-                    <input type="file" id="upload" accept="image/*">
+        <main class="container">
+            <div class="card">
+                <div class="step">
+                    <span class="number">1</span>
+                    <h3>Pilih Foto Kamu</h3>
+                </div>
+                <div class="upload-area">
+                    <input type="file" id="upload" accept="image/*" onchange="handleFileSelect()">
+                    <label for="upload" id="file-label">Klik untuk Pilih Foto atau Seret ke Sini</label>
+                </div>
+
+                <div class="step">
+                    <span class="number">2</span>
+                    <h3>Pilih Kualitas</h3>
                 </div>
                 
-                <div class="controls">
-                    <div class="control-item">
-                        <label>Format Output:</label>
-                        <select id="format">
-                            <option value="image/jpeg">JPEG (High Quality)</option>
-                            <option value="image/webp">WebP (Sangat Ringan)</option>
-                            <option value="image/png">PNG (Tanpa Hilang Detail)</option>
-                        </select>
-                    </div>
-
-                    <div class="control-item">
-                        <label>Target Resolusi (Upscale/Downscale):</label>
+                <div class="settings-grid">
+                    <div class="input-box">
+                        <label>Ingin Foto Seberapa Tajam?</label>
                         <select id="maxWidth">
-                            <option value="3840">4K Ultra HD (3840px)</option>
-                            <option value="2560">2K Quad HD (2560px)</option>
-                            <option value="1920" selected>Full HD (1920px)</option>
-                            <option value="1280">HD Ready (1280px)</option>
-                            <option value="800">Mobile Size (800px)</option>
+                            <option value="3840">Sangat Tajam (4K Ultra HD)</option>
+                            <option value="1920" selected>Tajam Standar (Full HD)</option>
+                            <option value="1280">Menengah (HD Ready)</option>
+                            <option value="800">Kecil (Hemat Memori)</option>
                         </select>
                     </div>
-                    
-                    <div class="control-item">
-                        <label>Kualitas HD (0.1 - 1.0):</label>
-                        <input type="range" id="quality" min="0.1" max="1.0" step="0.1" value="0.8">
+
+                    <div class="input-box">
+                        <label>Format Hasil:</label>
+                        <select id="format">
+                            <option value="image/jpeg">JPG (Paling Umum)</option>
+                            <option value="image/webp">WebP (Paling Kecil/Ringan)</option>
+                            <option value="image/png">PNG (Transparan)</option>
+                        </select>
                     </div>
 
-                    <div class="control-item">
-                        <label>Mode Pemrosesan:</label>
+                    <div class="input-box full-width">
+                        <label>Mode Proses:</label>
                         <select id="processMode">
-                            <option value="balanced">Balanced (Kompres Biasa)</option>
-                            <option value="enhance">Super HD Enhance (Pertajam Foto Buram)</option>
+                            <option value="balanced">Biasa (Hanya Kecilkan Ukuran)</option>
+                            <option value="enhance">Super HD (Tajamkan Foto Buram)</option>
                         </select>
                     </div>
-
-                    <button id="processBtn" onclick="compressImage()">PROSES FOTO HD</button>
                 </div>
 
-                <div id="resultArea" class="hidden">
-                    <div class="stats-box">
-                        <p id="sizeStats">Ukuran: 0MB ➔ 0MB</p>
-                        <p id="reductionStats" class="success-msg">Hemat 0%</p>
-                    </div>
-                    <img id="preview" alt="Preview">
-                    <a id="downloadBtn" class="btn-download">Download Hasil HD</a>
-                </div>
-            </section>
+                <button id="processBtn" class="main-button" onclick="compressImage()">MULAI PROSES SEKARANG</button>
 
-            <section class="card glass">
-                <h2>🛰️ System Tracker</h2>
-                <div class="info-list">
-                    <div class="info-item">
-                        <span>Jam Real-time:</span>
-                        <p id="clock">00:00:00</p>
+                <div id="resultArea" class="result-box hidden">
+                    <div class="divider"></div>
+                    <h3>Hasil Foto HD Kamu:</h3>
+                    <div class="comparison">
+                        <p id="sizeStats">Ukuran: 0MB → 0MB</p>
+                        <p id="reductionStats">Hemat 0%</p>
                     </div>
-                    <div class="info-item">
-                        <span>Lokasi & Kota:</span>
-                        <p id="location-info">Mendeteksi...</p>
-                    </div>
-                    <div class="info-item">
-                        <span>Perangkat / OS:</span>
-                        <p id="browser-info">Mendeteksi...</p>
-                    </div>
-                    <div class="info-item">
-                        <span>Resolusi Layar:</span>
-                        <p id="screen-info">---</p>
-                    </div>
+                    <img id="preview" alt="Preview Foto">
+                    <a id="downloadBtn" class="download-button">SIMPAN FOTO KE GALERI</a>
                 </div>
-            </section>
-        </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 HD-Compress - Privasi Aman (Proses Lokal)</p>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>
