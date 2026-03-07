@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HD Compressor & Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HD Image Compressor</h1>
+            <p>Kompres foto manual tanpa pecah</p>
+        </header>
+
+        <div class="main-grid">
+            <section class="card glass">
+                <h2>🖼️ Kompres & Konversi</h2>
+                <div class="input-group">
+                    <input type="file" id="upload" accept="image/*">
+                </div>
+                
+                <div class="controls">
+                    <div class="control-item">
+                        <label>Format:</label>
+                        <select id="format">
+                            <option value="image/jpeg">JPEG (High Quality)</option>
+                            <option value="image/webp">WebP (Modern)</option>
+                            <option value="image/png">PNG</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-item">
+                        <label>Kualitas (HD: 0.8 - 1.0):</label>
+                        <input type="range" id="quality" min="0.1" max="1.0" step="0.1" value="0.9">
+                    </div>
+
+                    <div class="control-item">
+                        <label>Lebar Maksimal (px):</label>
+                        <input type="number" id="maxWidth" value="2560">
+                    </div>
+
+                    <button id="processBtn" onclick="compressImage()">PROSES FOTO</button>
+                </div>
+
+                <div id="resultArea" class="hidden">
+                    <p class="success-msg">✅ Berhasil dikompres!</p>
+                    <img id="preview" alt="Preview">
+                    <a id="downloadBtn" class="btn-download">Download Hasil</a>
+                </div>
+            </section>
+
+            <section class="card glass">
+                <h2>🛰️ Data Perangkat & Lokasi</h2>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span>Jam Lokal:</span>
+                        <p id="clock">00:00:00</p>
+                    </div>
+                    <div class="info-item">
+                        <span>Sistem / Browser:</span>
+                        <p id="browser-info">Mendeteksi...</p>
+                    </div>
+                    <div class="info-item">
+                        <span>Lokasi Anda:</span>
+                        <p id="location-info">Menunggu izin lokasi...</p>
+                    </div>
+                    <div class="info-item">
+                        <span>Resolusi Layar:</span>
+                        <p id="screen-info">---</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
