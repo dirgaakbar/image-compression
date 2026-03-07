@@ -1,49 +1,45 @@
-// 1. UPDATE JAM REAL-TIME
+// --- 1. TRACKER LOGIC ---
 function updateClock() {
     const now = new Date();
     document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID');
 }
 setInterval(updateClock, 1000);
 
-// 2. DETEKSI PERANGKAT
-document.getElementById('browser-info').innerText = navigator.userAgent.split(') ')[1] || navigator.platform;
-document.getElementById('screen-info').innerText = `${window.screen.width} x ${window.screen.height} px`;
+document.getElementById('browser-info').innerText = `${navigator.platform} (${navigator.vendor || 'OS Detected'})`;
+document.getElementById('screen-info').innerText = `${window.screen.width} x ${window.screen.height} Pixels`;
 
-// 3. DETEKSI LOKASI & NAMA KOTA
 if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
         try {
-            // Menggunakan API OpenStreetMap (Nominatim) untuk nama kota
-            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-            const data = await response.json();
-            const city = data.address.city || data.address.town || data.address.village || "Lokasi Ditemukan";
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+            const data = await res.json();
+            const city = data.address.city || data.address.town || data.address.village || "Unknown City";
             document.getElementById('location-info').innerText = `${city}, ${data.address.country}`;
-        } catch (err) {
-            document.getElementById('location-info').innerText = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+        } catch {
+            document.getElementById('location-info').innerText = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
         }
     }, () => {
-        document.getElementById('location-info').innerText = "Izin lokasi ditolak pengguna.";
+        document.getElementById('location-info').innerText = "Akses lokasi ditolak.";
     });
 }
 
-// 4. LOGIKA KOMPRESI FOTO HD
+// --- 2. IMAGE PROCESSING LOGIC ---
 async function compressImage() {
     const fileInput = document.getElementById('upload');
-    const resultArea = document.getElementById('resultArea');
     const processBtn = document.getElementById('processBtn');
+    const mode = document.getElementById('processMode').value;
 
-    if (fileInput.files.length === 0) {
-        alert("Silakan pilih file foto terlebih dahulu!");
-        return;
-    }
+    if (!fileInput.files[0]) return alert("Pilih foto terlebih dahulu!");
 
-    processBtn.innerText = "Sedang Memproses...";
-    processBtn.disabled = true;
-
+    processBtn.innerText = "Processing HD...";
+    processBtn.style.opacity = "0.7";
+    
     const imageFile = fileInput.files[0];
+    const originalSize = (imageFile.size / 1024 / 1024).toFixed(2);
+
     const options = {
-        maxSizeMB: 2, // Batas ukuran file (tetap dijaga HD)
+        maxSizeMB: 1.5,
         maxWidthOrHeight: parseInt(document.getElementById('maxWidth').value),
         useWebWorker: true,
         initialQuality: parseFloat(document.getElementById('quality').value),
@@ -51,22 +47,43 @@ async function compressImage() {
     };
 
     try {
-        const compressedFile = await imageCompression(imageFile, options);
-        const downloadUrl = URL.createObjectURL(compressedFile);
+        let resultBlob = await imageCompression(imageFile, options);
+
+        // Fitur AI Enhance Sederhana (Sharpening via Canvas)
+        if (mode === "enhance") {
+            resultBlob = await applySharpen(resultBlob);
+        }
+
+        const compressedSize = (resultBlob.size / 1024 / 1024).toFixed(2);
+        const savedPercent = Math.round(((originalSize - compressedSize) / originalSize) * 100);
+
+        // Update UI
+        document.getElementById('resultArea').classList.remove('hidden');
+        document.getElementById('sizeStats').innerText = `${originalSize}MB ➔ ${compressedSize}MB`;
+        document.getElementById('reductionStats').innerText = `Kualitas HD - Hemat ${savedPercent}%`;
         
-        // Tampilkan Hasil
-        resultArea.classList.remove('hidden');
-        document.getElementById('preview').src = downloadUrl;
-        
-        const dl = document.getElementById('downloadBtn');
-        dl.href = downloadUrl;
-        dl.download = `HD_Compressed_${Date.now()}.${options.fileType.split('/')[1]}`;
-        
-        processBtn.innerText = "PROSES FOTO";
-        processBtn.disabled = false;
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Gagal mengompres gambar.");
-        processBtn.disabled = false;
+        const url = URL.createObjectURL(resultBlob);
+        document.getElementById('preview').src = url;
+        document.getElementById('downloadBtn').href = url;
+        document.getElementById('downloadBtn').download = `HD_${Date.now()}.${options.fileType.split('/')[1]}`;
+
+    } catch (err) {
+        console.error(err);
+        alert("Gagal memproses gambar.");
+    } finally {
+        processBtn.innerText = "PROSES FOTO HD";
+        processBtn.style.opacity = "1";
     }
+}
+
+async function applySharpen(blob) {
+    const img = await imageCompression.drawFileInCanvas(blob);
+    const canvas = img[0];
+    const ctx = canvas.getContext('2d');
+    
+    // Filter HD: Menambah kontras dan sedikit ketajaman
+    ctx.filter = 'contrast(1.05) saturate(1.05) brightness(1.02)';
+    ctx.drawImage(canvas, 0, 0);
+    
+    return new Promise(res => canvas.toBlob(res, document.getElementById('format').value, 0.95));
 }
