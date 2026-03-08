@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HD Image Optimizer</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<header>
+<h1>📸 HD Image Optimizer</h1>
+<p>Kompres foto tanpa kehilangan kualitas</p>
+</header>
+
+<div class="card">
+
+<div class="upload-area" id="drop-zone">
+<input type="file" id="upload" accept="image/*" hidden>
+<label for="upload" id="file-label">Pilih Foto / Drag & Drop</label>
+</div>
+
+<div class="settings">
+
+<label>Resolusi Maks</label>
+<select id="maxWidth">
+<option value="3840">4K</option>
+<option value="1920" selected>Full HD</option>
+<option value="1280">HD</option>
+<option value="800">Mobile</option>
+</select>
+
+<label>Format Output</label>
+<select id="format">
+<option value="image/jpeg">JPG</option>
+<option value="image/webp">WebP</option>
+<option value="image/png">PNG</option>
+</select>
+
+<label>Mode</label>
+<select id="mode">
+<option value="balanced">Balanced</option>
+<option value="enhance">Enhance HD</option>
+</select>
+
+<label>Quality</label>
+<input type="number" id="quality" min="0.1" max="1" step="0.05" value="0.8">
+
+</div>
+
+<button id="processBtn">Optimalkan</button>
+
+<div class="result hidden" id="result">
+
+<div class="stats">
+<span id="sizeStats"></span>
+<span id="savedStats"></span>
+</div>
+
+<div class="compare-container">
+
+<img id="afterImg">
+<img id="beforeImg">
+
+<div class="slider" id="slider"></div>
+
+</div>
+
+<a id="downloadBtn">Download Hasil</a>
+
+</div>
+
+</div>
+
+<footer>
+<p>🔒 Semua proses dilakukan di perangkat Anda</p>
+</footer>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
