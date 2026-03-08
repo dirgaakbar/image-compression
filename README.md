@@ -1,4 +1,4 @@
-# 📸 HD Image Compressor & Device Tracker
+# 📸 HD Image Compressor
 
 Website statis modern untuk melakukan kompresi gambar kualitas tinggi (HD) secara manual, dan konversi format.
 
