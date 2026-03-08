@@ -1,69 +1,102 @@
-// Mengganti teks saat file dipilih
+// Fungsi untuk mengganti teks label saat file dipilih
 function handleFileSelect() {
     const file = document.getElementById('upload').files[0];
+    const label = document.getElementById('file-label');
     if (file) {
-        document.getElementById('file-label').innerText = "Terpilih: " + file.name;
+        label.innerText = "✓ Berkas: " + (file.name.length > 20 ? file.name.substring(0, 18) + "..." : file.name);
+        label.style.color = "#2ea043";
     }
 }
+
+// Drag & Drop Functionality
+const dropZone = document.getElementById('drop-zone');
+['dragover', 'dragleave', 'drop'].forEach(evt => {
+    dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        if(evt === 'dragover') dropZone.classList.add('dragover');
+        else dropZone.classList.remove('dragover');
+        if(evt === 'drop') {
+            document.getElementById('upload').files = e.dataTransfer.files;
+            handleFileSelect();
+        }
+    });
+});
 
 async function compressImage() {
     const fileInput = document.getElementById('upload');
     const processBtn = document.getElementById('processBtn');
     const mode = document.getElementById('processMode').value;
+    const format = document.getElementById('format').value;
 
-    if (!fileInput.files[0]) return alert("Silakan pilih foto dulu!");
+    if (!fileInput.files[0]) return alert("Silakan pilih foto terlebih dahulu.");
 
-    processBtn.innerText = "Sabar, Sedang Memproses...";
+    // Loading UI
+    processBtn.innerText = "Memproses secara lokal...";
     processBtn.disabled = true;
 
     const imageFile = fileInput.files[0];
     const originalSize = (imageFile.size / 1024 / 1024).toFixed(2);
 
     const options = {
-        maxSizeMB: 1.5,
+        maxSizeMB: mode === 'enhance' ? 2 : 1, // Berikan ruang lebih untuk mode HD
         maxWidthOrHeight: parseInt(document.getElementById('maxWidth').value),
         useWebWorker: true,
-        initialQuality: 0.85, // Default HD quality
-        fileType: document.getElementById('format').value
+        initialQuality: mode === 'enhance' ? 0.92 : 0.8,
+        fileType: format
     };
 
     try {
         let resultBlob = await imageCompression(imageFile, options);
 
-        // Jika mode Enhance, tambahkan ketajaman visual
+        // Jika mode Enhance aktif, jalankan penajaman visual
         if (mode === "enhance") {
-            resultBlob = await applySharpen(resultBlob);
+            resultBlob = await applySharpen(resultBlob, format);
         }
 
         const compressedSize = (resultBlob.size / 1024 / 1024).toFixed(2);
-        const savedPercent = Math.round(((originalSize - compressedSize) / originalSize) * 100);
+        const savedPercent = Math.max(0, Math.round(((originalSize - compressedSize) / originalSize) * 100));
 
-        // Tampilkan Hasil
-        document.getElementById('resultArea').classList.remove('hidden');
-        document.getElementById('sizeStats').innerText = `${originalSize}MB ➔ ${compressedSize}MB`;
-        document.getElementById('reductionStats').innerText = `Hemat Sekitar ${savedPercent}%`;
-        
+        // Tampilkan Hasil & Manajemen Memori
+        const resultArea = document.getElementById('resultArea');
+        const preview = document.getElementById('preview');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Bersihkan memori lama jika ada
+        if (preview.src.startsWith('blob:')) URL.revokeObjectURL(preview.src);
+
         const url = URL.createObjectURL(resultBlob);
-        document.getElementById('preview').src = url;
-        document.getElementById('downloadBtn').href = url;
-        document.getElementById('downloadBtn').download = `HD_Foto_${Date.now()}.jpg`;
+        
+        document.getElementById('sizeStats').innerText = `${originalSize}MB ➔ ${compressedSize}MB`;
+        document.getElementById('reductionStats').innerText = `Hemat ${savedPercent}%`;
+        
+        preview.src = url;
+        downloadBtn.href = url;
+        downloadBtn.download = `HD_Optimized_${Date.now()}.${format.split('/')[1]}`;
+
+        resultArea.classList.remove('hidden');
+        
+        // Scroll halus ke area hasil
+        setTimeout(() => {
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
 
     } catch (err) {
-        alert("Terjadi kesalahan saat memproses.");
+        console.error(err);
+        alert("Terjadi kesalahan teknis. Pastikan berkas adalah gambar valid.");
     } finally {
-        processBtn.innerText = "MULAI PROSES SEKARANG";
+        processBtn.innerText = "OPTIMALKAN SEKARANG";
         processBtn.disabled = false;
-        // Scroll otomatis ke hasil
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 }
 
-async function applySharpen(blob) {
+async function applySharpen(blob, format) {
     const img = await imageCompression.drawFileInCanvas(blob);
     const canvas = img[0];
     const ctx = canvas.getContext('2d');
-    // Penajaman HD: menaikkan kontras agar detail muncul
-    ctx.filter = 'contrast(1.1) saturate(1.05)';
+    
+    // Teknik Penajaman: Kontras halus & sedikit peningkatan kecerahan
+    ctx.filter = 'contrast(1.08) saturate(1.02) brightness(1.02)';
     ctx.drawImage(canvas, 0, 0);
-    return new Promise(res => canvas.toBlob(res, document.getElementById('format').value, 0.95));
+    
+    return new Promise(res => canvas.toBlob(res, format, 0.95));
 }
