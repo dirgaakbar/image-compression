@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kompres Foto HD - Mudah & Cepat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HD-Compress | Optimalisasi Foto Profesional</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -13,72 +12,74 @@
     <div class="wrapper">
         <header>
             <div class="logo">📸 HD-Compress</div>
-            <h1>Ubah Foto Jadi HD & Kecil</h1>
-            <p>Tanpa ribet, tanpa pecah. 100% Aman di perangkat Anda.</p>
+            <h1>Transformasi Foto HD</h1>
+            <p>Optimalkan ukuran tanpa mengorbankan kualitas. Rahasia tajam & ringan.</p>
         </header>
 
         <main class="container">
             <div class="card">
                 <div class="step">
                     <span class="number">1</span>
-                    <h3>Pilih Foto Kamu</h3>
+                    <h3>Pilih Sumber Gambar</h3>
                 </div>
-                <div class="upload-area">
+                <div class="upload-area" id="drop-zone">
                     <input type="file" id="upload" accept="image/*" onchange="handleFileSelect()">
-                    <label for="upload" id="file-label">Klik untuk Pilih Foto atau Seret ke Sini</label>
+                    <label for="upload" id="file-label">Pilih Foto atau Tarik ke Sini</label>
                 </div>
 
                 <div class="step">
                     <span class="number">2</span>
-                    <h3>Pilih Kualitas</h3>
+                    <h3>Konfigurasi Output</h3>
                 </div>
                 
                 <div class="settings-grid">
                     <div class="input-box">
-                        <label>Ingin Foto Seberapa Tajam?</label>
+                        <label>Resolusi Maksimal</label>
                         <select id="maxWidth">
-                            <option value="3840">Sangat Tajam (4K Ultra HD)</option>
-                            <option value="1920" selected>Tajam Standar (Full HD)</option>
-                            <option value="1280">Menengah (HD Ready)</option>
-                            <option value="800">Kecil (Hemat Memori)</option>
+                            <option value="3840">Ultra HD (4K)</option>
+                            <option value="1920" selected>Full HD (1080p)</option>
+                            <option value="1280">Standard HD (720p)</option>
+                            <option value="800">Mobile Friendly</option>
                         </select>
                     </div>
 
                     <div class="input-box">
-                        <label>Format Hasil:</label>
+                        <label>Format Berkas</label>
                         <select id="format">
-                            <option value="image/jpeg">JPG (Paling Umum)</option>
-                            <option value="image/webp">WebP (Paling Kecil/Ringan)</option>
-                            <option value="image/png">PNG (Transparan)</option>
+                            <option value="image/jpeg">JPG (Terpopuler)</option>
+                            <option value="image/webp">WebP (Efisiensi Tinggi)</option>
+                            <option value="image/png">PNG (Tanpa Kompresi)</option>
                         </select>
                     </div>
 
                     <div class="input-box full-width">
-                        <label>Mode Proses:</label>
+                        <label>Mode Pemrosesan</label>
                         <select id="processMode">
-                            <option value="balanced">Biasa (Hanya Kecilkan Ukuran)</option>
-                            <option value="enhance">Super HD (Tajamkan Foto Buram)</option>
+                            <option value="balanced">Standar (Kompresi Seimbang)</option>
+                            <option value="enhance">Super HD (Penajaman Detail & Kontras)</option>
                         </select>
                     </div>
                 </div>
 
-                <button id="processBtn" class="main-button" onclick="compressImage()">MULAI PROSES SEKARANG</button>
+                <button id="processBtn" class="main-button" onclick="compressImage()">OPTIMALKAN SEKARANG</button>
 
                 <div id="resultArea" class="result-box hidden">
                     <div class="divider"></div>
-                    <h3>Hasil Foto HD Kamu:</h3>
                     <div class="comparison">
-                        <p id="sizeStats">Ukuran: 0MB → 0MB</p>
-                        <p id="reductionStats">Hemat 0%</p>
+                        <span id="sizeStats">0MB → 0MB</span>
+                        <span id="reductionStats" class="badge">Hemat 0%</span>
                     </div>
-                    <img id="preview" alt="Preview Foto">
-                    <a id="downloadBtn" class="download-button">SIMPAN FOTO KE GALERI</a>
+                    <div class="preview-container">
+                        <img id="preview" alt="Pratinjau Foto">
+                    </div>
+                    <a id="downloadBtn" class="download-button">UNDUH FOTO HD</a>
                 </div>
             </div>
         </main>
 
         <footer>
-            <p>&copy; 2026 HD-Compress - Privasi Aman Data Anda Tidak Dikirim ke Server(Proses Lokal)</p>
+            <p>&copy; 2026 <strong>HD-Compress Studio</strong>. Dikembangkan dengan privasi mutlak.</p>
+            <p class="privacy-note">🔒 <strong>Privasi Terjamin:</strong> Seluruh proses enkripsi dan kompresi dilakukan secara lokal pada perangkat Anda. Foto tidak pernah diunggah ke server kami.</p>
         </footer>
     </div>
     <script src="script.js"></script>
