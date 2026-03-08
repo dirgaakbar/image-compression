@@ -1,90 +1,103 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HD Image Optimizer</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HD Image Optimizer | Kompresi Cerdas & Aman</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
 </head>
-
 <body>
 
 <div class="wrapper">
+    <header>
+        <h1>📸 HD Image Optimizer</h1>
+        <p>Optimalkan resolusi foto Anda dengan teknologi kompresi instan tanpa mengurangi kejernihan visual.</p>
+    </header>
 
-<header>
-<h1>📸 HD Image Optimizer</h1>
-<p>Kompres foto tanpa kehilangan kualitas</p>
-</header>
+    <main class="card">
+        <div class="upload-area" id="drop-zone">
+            <div class="upload-icon">📁</div>
+            <input type="file" id="upload" accept="image/*" hidden>
+            <label for="upload" id="file-label">
+                <strong>Klik untuk pilih foto</strong> atau seret file ke sini
+            </label>
+            <p class="file-support">Mendukung JPG, PNG, & WebP</p>
+        </div>
 
-<div class="card">
+        <div class="settings-grid">
+            <div class="input-group">
+                <label>Resolusi Maksimal</label>
+                <select id="maxWidth">
+                    <option value="3840">Ultra HD (4K)</option>
+                    <option value="1920" selected>Full HD (1080p)</option>
+                    <option value="1280">High Definition (720p)</option>
+                    <option value="800">Mobile Optimized</option>
+                </select>
+            </div>
 
-<div class="upload-area" id="drop-zone">
-<input type="file" id="upload" accept="image/*" hidden>
-<label for="upload" id="file-label">Pilih Foto / Drag & Drop</label>
-</div>
+            <div class="input-group">
+                <label>Format Keluaran</label>
+                <select id="format">
+                    <option value="image/jpeg">JPEG (Standar)</option>
+                    <option value="image/webp">WebP (Generasi Baru)</option>
+                    <option value="image/png">PNG (Tanpa Loss)</option>
+                </select>
+            </div>
 
-<div class="settings">
+            <div class="input-group">
+                <label>Mode Optimasi</label>
+                <select id="mode">
+                    <option value="balanced">Seimbang (Rekomendasi)</option>
+                    <option value="enhance">HD Enhancement (Tajam)</option>
+                </select>
+            </div>
 
-<label>Resolusi Maks</label>
-<select id="maxWidth">
-<option value="3840">4K</option>
-<option value="1920" selected>Full HD</option>
-<option value="1280">HD</option>
-<option value="800">Mobile</option>
-</select>
+            <div class="input-group">
+                <label>Tingkat Kualitas (0.1 - 1.0)</label>
+                <input type="number" id="quality" min="0.1" max="1" step="0.05" value="0.8">
+            </div>
+        </div>
 
-<label>Format Output</label>
-<select id="format">
-<option value="image/jpeg">JPG</option>
-<option value="image/webp">WebP</option>
-<option value="image/png">PNG</option>
-</select>
+        <button id="processBtn" class="primary-btn">Mulai Optimasi Gambar</button>
 
-<label>Mode</label>
-<select id="mode">
-<option value="balanced">Balanced</option>
-<option value="enhance">Enhance HD</option>
-</select>
+        <div class="result hidden" id="result">
+            <hr class="divider">
+            <div class="stats-container">
+                <div class="stat-box">
+                    <span>Ukuran Berkas</span>
+                    <strong id="sizeStats">-</strong>
+                </div>
+                <div class="stat-box">
+                    <span>Efisiensi</span>
+                    <strong id="savedStats" class="highlight">-</strong>
+                </div>
+            </div>
 
-<label>Quality</label>
-<input type="number" id="quality" min="0.1" max="1" step="0.05" value="0.8">
+            <p class="instruction-text">Geser garis di tengah untuk membandingkan hasil:</p>
+            <div class="compare-container">
+                <img id="afterImg" alt="Hasil Optimasi">
+                <div id="beforeImgContainer">
+                    <img id="beforeImg" alt="Foto Asli">
+                </div>
+                <div class="slider" id="slider">
+                    <div class="slider-button"></div>
+                </div>
+            </div>
 
-</div>
+            <a id="downloadBtn" class="download-btn">Unduh Hasil Optimasi</a>
+        </div>
+    </main>
 
-<button id="processBtn">Optimalkan</button>
-
-<div class="result hidden" id="result">
-
-<div class="stats">
-<span id="sizeStats"></span>
-<span id="savedStats"></span>
-</div>
-
-<div class="compare-container">
-
-<img id="afterImg">
-<img id="beforeImg">
-
-<div class="slider" id="slider"></div>
-
-</div>
-
-<a id="downloadBtn">Download Hasil</a>
-
-</div>
-
-</div>
-
-<footer>
-<p>🔒 Semua proses dilakukan di perangkat Anda</p>
-</footer>
-
+    <footer>
+        <div class="privacy-notice">
+            <span class="shield-icon">🛡️</span>
+            <p><strong>Privasi Terjamin:</strong> Seluruh proses optimasi dilakukan secara lokal di perangkat Anda. Foto tidak pernah diunggah ke server mana pun.</p>
+        </div>
+        <p class="copyright">&copy; 2026 HD Optimizer. All Rights Reserved.</p>
+    </footer>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
